@@ -1,0 +1,101 @@
+name: Bug Report
+description: Report a bug with swagger-to-mcp
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below to help us diagnose and fix the issue.
+
+        **Important:** You must include your OpenAPI/Swagger spec (or a minimal reproducing version) for us to investigate the bug.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: openapi-spec
+    attributes:
+      label: OpenAPI/Swagger Spec
+      description: |
+        **REQUIRED:** Paste your OpenAPI/Swagger spec here (JSON or YAML), or attach the file.
+        Please provide a minimal spec that reproduces the issue. Remove any sensitive data like API keys or internal endpoints.
+      placeholder: |
+        {
+          "openapi": "3.0.0",
+          "info": { "title": "My API", "version": "1.0.0" },
+          "paths": {
+            "/example": {
+              "get": { ... }
+            }
+          }
+        }
+      render: yaml
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command Used
+      description: The exact command you ran that caused the issue.
+      placeholder: uvx swagger-to-mcp serve ./spec.json --base-url https://api.example.com
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-output
+    attributes:
+      label: Error Output
+      description: The full error message or unexpected output.
+      placeholder: Paste the error output here...
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: python-version
+    attributes:
+      label: Python Version
+      description: What version of Python are you using?
+      options:
+        - "3.13"
+        - "3.12"
+        - "3.11"
+        - Other (please specify in description)
+    validations:
+      required: true
+
+  - type: input
+    id: swagger-to-mcp-version
+    attributes:
+      label: swagger-to-mcp Version
+      description: Run `uvx swagger-to-mcp --version` or check your installed version.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what you expected...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem (environment, related issues, etc.).
+      placeholder: Add any other context...
+    validations:
+      required: false

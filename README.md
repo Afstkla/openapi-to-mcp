@@ -1,5 +1,11 @@
 # swagger-to-mcp
 
+[![PyPI](https://img.shields.io/pypi/v/swagger-to-mcp)](https://pypi.org/project/swagger-to-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/swagger-to-mcp)](https://pypi.org/project/swagger-to-mcp/)
+[![CI](https://github.com/afstkla/swagger-to-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/afstkla/swagger-to-mcp/actions)
+[![codecov](https://codecov.io/gh/afstkla/swagger-to-mcp/graph/badge.svg)](https://codecov.io/gh/afstkla/swagger-to-mcp)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 Convert any OpenAPI/Swagger spec into an MCP server, instantly exposing your REST API as tools for Claude.
 
 ```bash

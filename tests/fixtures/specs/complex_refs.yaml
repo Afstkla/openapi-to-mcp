@@ -1,0 +1,626 @@
+openapi: 3.0.3
+info:
+  title: Complex References API
+  description: An API spec focused on testing complex $ref resolution scenarios
+  version: 1.0.0
+
+servers:
+  - url: https://api.example.com/v1
+
+paths:
+  /entities:
+    get:
+      operationId: listEntities
+      summary: List entities with complex types
+      description: Returns entities that use allOf composition
+      parameters:
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/OffsetParam"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Entity"
+
+    post:
+      operationId: createEntity
+      summary: Create an entity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EntityInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entity"
+
+  /entities/{entityId}:
+    parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getEntity
+      summary: Get entity by ID
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Entity"
+
+  /polymorphic-items:
+    get:
+      operationId: listPolymorphicItems
+      summary: List items with oneOf types
+      description: Returns items that can be different types
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PolymorphicItem"
+
+    post:
+      operationId: createPolymorphicItem
+      summary: Create a polymorphic item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PolymorphicItem"
+      responses:
+        "201":
+          description: Created
+
+  /flexible-data:
+    get:
+      operationId: getFlexibleData
+      summary: Get data with anyOf types
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlexibleResponse"
+
+    post:
+      operationId: submitFlexibleData
+      summary: Submit flexible data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FlexibleInput"
+      responses:
+        "200":
+          description: Successful response
+
+  /nested:
+    get:
+      operationId: getNestedData
+      summary: Get deeply nested data
+      description: Returns data with multiple levels of $ref nesting
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeepNested"
+
+  /trees:
+    get:
+      operationId: listTrees
+      summary: List tree structures
+      description: Returns tree structures that reference themselves (circular prevention test)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TreeNode"
+
+    post:
+      operationId: createTree
+      summary: Create a tree structure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TreeNode"
+      responses:
+        "201":
+          description: Created
+
+  /linked-lists:
+    get:
+      operationId: listLinkedLists
+      summary: List linked list structures
+      description: Another circular reference test case
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LinkedNode"
+
+  /comments:
+    get:
+      operationId: listComments
+      summary: List comments with nested replies
+      description: Comments that can have nested comment replies (recursive)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+
+components:
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      description: Maximum items to return
+      schema:
+        type: integer
+        default: 10
+        maximum: 100
+
+    OffsetParam:
+      name: offset
+      in: query
+      description: Number of items to skip
+      schema:
+        type: integer
+        default: 0
+
+  schemas:
+    # Base types for allOf composition
+    BaseEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Auditable:
+      type: object
+      properties:
+        createdBy:
+          type: string
+        modifiedBy:
+          type: string
+        version:
+          type: integer
+
+    Taggable:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+
+    # allOf composition - combines multiple schemas
+    Entity:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - $ref: "#/components/schemas/Auditable"
+        - $ref: "#/components/schemas/Taggable"
+        - type: object
+          required:
+            - name
+            - type
+          properties:
+            name:
+              type: string
+              description: Entity name
+            type:
+              type: string
+              enum:
+                - document
+                - folder
+                - link
+            description:
+              type: string
+            metadata:
+              $ref: "#/components/schemas/EntityMetadata"
+
+    EntityInput:
+      allOf:
+        - $ref: "#/components/schemas/Taggable"
+        - type: object
+          required:
+            - name
+            - type
+          properties:
+            name:
+              type: string
+            type:
+              type: string
+              enum:
+                - document
+                - folder
+                - link
+            description:
+              type: string
+
+    EntityMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+        mimeType:
+          type: string
+        checksum:
+          type: string
+        customFields:
+          type: object
+          additionalProperties:
+            type: string
+
+    # oneOf composition - exactly one of these types
+    PolymorphicItem:
+      oneOf:
+        - $ref: "#/components/schemas/TextItem"
+        - $ref: "#/components/schemas/ImageItem"
+        - $ref: "#/components/schemas/VideoItem"
+      discriminator:
+        propertyName: itemType
+        mapping:
+          text: "#/components/schemas/TextItem"
+          image: "#/components/schemas/ImageItem"
+          video: "#/components/schemas/VideoItem"
+
+    TextItem:
+      type: object
+      required:
+        - itemType
+        - content
+      properties:
+        itemType:
+          type: string
+          enum:
+            - text
+        content:
+          type: string
+        format:
+          type: string
+          enum:
+            - plain
+            - markdown
+            - html
+
+    ImageItem:
+      type: object
+      required:
+        - itemType
+        - url
+      properties:
+        itemType:
+          type: string
+          enum:
+            - image
+        url:
+          type: string
+          format: uri
+        width:
+          type: integer
+        height:
+          type: integer
+        altText:
+          type: string
+
+    VideoItem:
+      type: object
+      required:
+        - itemType
+        - url
+      properties:
+        itemType:
+          type: string
+          enum:
+            - video
+        url:
+          type: string
+          format: uri
+        duration:
+          type: integer
+          description: Duration in seconds
+        thumbnail:
+          $ref: "#/components/schemas/ImageItem"
+
+    # anyOf composition - one or more of these types
+    FlexibleResponse:
+      anyOf:
+        - $ref: "#/components/schemas/SuccessResponse"
+        - $ref: "#/components/schemas/PartialResponse"
+        - $ref: "#/components/schemas/ErrorResponse"
+
+    SuccessResponse:
+      type: object
+      required:
+        - status
+        - data
+      properties:
+        status:
+          type: string
+          enum:
+            - success
+        data:
+          type: object
+          additionalProperties: true
+        metadata:
+          $ref: "#/components/schemas/ResponseMetadata"
+
+    PartialResponse:
+      type: object
+      required:
+        - status
+        - partialData
+        - errors
+      properties:
+        status:
+          type: string
+          enum:
+            - partial
+        partialData:
+          type: object
+          additionalProperties: true
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldError"
+
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - error
+      properties:
+        status:
+          type: string
+          enum:
+            - error
+        error:
+          $ref: "#/components/schemas/ErrorDetail"
+
+    ResponseMetadata:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+        processingTime:
+          type: integer
+          description: Processing time in milliseconds
+
+    FieldError:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+
+    ErrorDetail:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldError"
+
+    # anyOf for input
+    FlexibleInput:
+      anyOf:
+        - $ref: "#/components/schemas/SimpleInput"
+        - $ref: "#/components/schemas/BatchInput"
+
+    SimpleInput:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+
+    BatchInput:
+      type: object
+      required:
+        - values
+      properties:
+        values:
+          type: array
+          items:
+            type: string
+
+    # Nested $refs - multiple levels deep
+    DeepNested:
+      type: object
+      properties:
+        level1:
+          $ref: "#/components/schemas/Level1"
+
+    Level1:
+      type: object
+      properties:
+        name:
+          type: string
+        level2:
+          $ref: "#/components/schemas/Level2"
+
+    Level2:
+      type: object
+      properties:
+        name:
+          type: string
+        level3:
+          $ref: "#/components/schemas/Level3"
+
+    Level3:
+      type: object
+      properties:
+        name:
+          type: string
+        level4:
+          $ref: "#/components/schemas/Level4"
+
+    Level4:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        deepRef:
+          $ref: "#/components/schemas/BaseEntity"
+
+    # Circular reference - TreeNode references itself
+    TreeNode:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        value:
+          type: string
+        parent:
+          $ref: "#/components/schemas/TreeNode"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/TreeNode"
+
+    # Another circular reference pattern - LinkedNode
+    LinkedNode:
+      type: object
+      required:
+        - id
+        - data
+      properties:
+        id:
+          type: integer
+        data:
+          type: string
+        next:
+          $ref: "#/components/schemas/LinkedNode"
+        previous:
+          $ref: "#/components/schemas/LinkedNode"
+
+    # Recursive comments
+    Comment:
+      type: object
+      required:
+        - id
+        - text
+        - author
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+        author:
+          $ref: "#/components/schemas/Author"
+        createdAt:
+          type: string
+          format: date-time
+        replies:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+        parentComment:
+          $ref: "#/components/schemas/Comment"
+
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        avatar:
+          type: string
+          format: uri
+
+    # Complex allOf with oneOf nested inside
+    ComplexComposition:
+      allOf:
+        - $ref: "#/components/schemas/BaseEntity"
+        - type: object
+          properties:
+            content:
+              oneOf:
+                - $ref: "#/components/schemas/TextItem"
+                - $ref: "#/components/schemas/ImageItem"
+            metadata:
+              anyOf:
+                - $ref: "#/components/schemas/EntityMetadata"
+                - type: object
+                  properties:
+                    simple:
+                      type: boolean

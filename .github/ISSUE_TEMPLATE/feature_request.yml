@@ -1,0 +1,72 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for swagger-to-mcp
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see.
+      placeholder: I would like swagger-to-mcp to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe alternatives you've considered...
+    validations:
+      required: false
+
+  - type: textarea
+    id: spec-example
+    attributes:
+      label: Example OpenAPI Spec
+      description: If applicable, provide an example OpenAPI spec that demonstrates the feature.
+      placeholder: |
+        {
+          "openapi": "3.0.0",
+          ...
+        }
+      render: yaml
+    validations:
+      required: false
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: How would this feature benefit you?
+      options:
+        - Critical - blocks my use case entirely
+        - High - significant improvement to my workflow
+        - Medium - nice to have, would use regularly
+        - Low - minor improvement
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or examples.
+      placeholder: Add any other context...
+    validations:
+      required: false

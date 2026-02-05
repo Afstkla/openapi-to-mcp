@@ -78,16 +78,35 @@ def resolve_schema(spec: dict[str, Any], schema: dict[str, Any]) -> dict[str, An
     return schema
 
 
+def _clean_operation_id(operation_id: str) -> str:
+    """Clean up an operationId to be a valid tool name.
+
+    Converts camelCase to snake_case, replaces hyphens with underscores.
+    """
+    # Replace hyphens with underscores
+    name = operation_id.replace("-", "_")
+    # Convert camelCase to snake_case
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name).lower()
+    # Clean up multiple underscores
+    name = re.sub(r"_+", "_", name).strip("_")
+    return name
+
+
 def make_tool_name(method: str, path: str, operation_id: str | None) -> str:
     """Generate a clean tool name from the operation.
 
-    Generates names like:
-    - GET /v1/skills/ -> get_skills
+    If operationId is provided in the spec, it is used (cleaned up to snake_case).
+    Otherwise generates names like:
+    - GET /v1/skills/ -> list_skills
     - POST /v1/skills/ -> create_skill
     - GET /v1/skills/{id} -> get_skill
     - PATCH /v1/skills/{id} -> update_skill
     - DELETE /v1/skills/{id} -> delete_skill
     """
+    # Use operationId if provided
+    if operation_id:
+        return _clean_operation_id(operation_id)
+
     # Clean up path: remove version prefix, extract meaningful parts
     clean_path = re.sub(r"^/v\d+/", "/", path)  # Remove /v1/, /v2/ etc
     segments = [s for s in clean_path.split("/") if s and not s.startswith("{")]

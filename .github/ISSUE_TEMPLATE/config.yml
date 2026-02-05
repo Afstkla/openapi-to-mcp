@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions
+    url: https://github.com/afstkla/swagger-to-mcp/discussions
+    about: Ask questions and discuss ideas in GitHub Discussions
+  - name: Documentation
+    url: https://github.com/afstkla/swagger-to-mcp#readme
+    about: Read the documentation for usage examples and guides

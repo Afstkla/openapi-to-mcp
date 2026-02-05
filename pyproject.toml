@@ -35,7 +35,19 @@ Issues = "https://github.com/afstkla/swagger-to-mcp/issues"
 swagger-to-mcp = "swagger_to_mcp.cli:main"
 
 [dependency-groups]
-dev = ["ruff>=0.4.0"]
+dev = [
+    "ruff>=0.4.0",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "pytest-httpx>=0.32.0",
+    "pytest-mock>=3.14.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [build-system]
 requires = ["hatchling"]

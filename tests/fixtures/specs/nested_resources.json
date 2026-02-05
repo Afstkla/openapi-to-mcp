@@ -1,0 +1,127 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nested Resources API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/organizations/{org_id}/teams": {
+      "get": {
+        "operationId": "listOrgTeams",
+        "summary": "List teams in organization",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createOrgTeam",
+        "summary": "Create team in organization",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/v1/organizations/{org_id}/teams/{team_id}": {
+      "get": {
+        "operationId": "getOrgTeam",
+        "summary": "Get specific team",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "put": {
+        "operationId": "replaceOrgTeam",
+        "summary": "Replace team",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateOrgTeam",
+        "summary": "Update team",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteOrgTeam",
+        "summary": "Delete team",
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/v2/projects/{project_id}/members/{member_id}": {
+      "get": {
+        "operationId": "getProjectMember",
+        "summary": "Get project member",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/data-sources": {
+      "get": {
+        "operationId": "listDataSources",
+        "summary": "List data sources with hyphens",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/skills": {
+      "get": {
+        "summary": "List skills",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create skill",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/skills/{id}": {
+      "get": {
+        "summary": "Get skill",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/address": {
+      "get": {
+        "summary": "Get address (no trailing s)",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  }
+}
