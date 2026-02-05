@@ -278,11 +278,15 @@ class AuthenticatedClient:
         if params:
             request_params.update(params)
 
+        # Explicitly pass cookies (httpx doesn't auto-send Domain=localhost cookies)
+        cookies = dict(self._client.cookies)
+
         return await self._client.request(
             method=method,
             url=url,
             params=request_params or None,
             headers=request_headers or None,
+            cookies=cookies or None,
             json=json,
             data=data,
         )
