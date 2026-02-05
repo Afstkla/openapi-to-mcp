@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync --group dev
       - run: uv run ruff check .
       - run: uv run ruff format --check .
@@ -30,13 +30,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@v7
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - run: uv sync --group dev
-      - run: uv run pytest --cov=swagger_to_mcp --cov-report=xml -v
-      - uses: codecov/codecov-action@v4
+      - run: uv run pytest --cov=openapi_to_mcp --cov-report=xml -v
+      - uses: codecov/codecov-action@v5
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
         with:
           files: ./coverage.xml

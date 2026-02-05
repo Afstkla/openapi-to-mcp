@@ -31,6 +31,12 @@ ENV/
 *.swp
 *.swo
 
+# Testing
+.coverage
+coverage.xml
+.pytest_cache/
+htmlcov/
+
 # Project specific
 mcp_config.json
 *.log
